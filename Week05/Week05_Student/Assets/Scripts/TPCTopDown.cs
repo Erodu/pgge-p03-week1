@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PGGE;
 
 public class TPCTopDown : TPCBase
 {
@@ -13,8 +14,8 @@ public class TPCTopDown : TPCBase
     {
         // For topdown camera we do not use the x and z offsets.
         Vector3 targetPos = mPlayerTransform.position;
-        targetPos.y += GameConstants.CameraPositionOffset.y;
-        Vector3 position = Vector3.Lerp(mCameraTransform.position, targetPos, Time.deltaTime * GameConstants.Damping);
+        targetPos.y += CameraConstants.CameraPositionOffset.y;
+        Vector3 position = Vector3.Lerp(mCameraTransform.position, targetPos, Time.deltaTime * CameraConstants.Damping);
         mCameraTransform.position = position;
         mCameraTransform.rotation = Quaternion.Euler(90.0f, 0.0f, 0.0f);
     }

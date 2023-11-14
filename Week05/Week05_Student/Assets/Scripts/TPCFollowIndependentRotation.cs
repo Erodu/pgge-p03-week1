@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PGGE;
 
 public class TPCFollowIndependentRotation : TPCBase
 {
@@ -34,16 +35,16 @@ public class TPCFollowIndependentRotation : TPCBase
 #endif
 
         // We apply the initial rotation to the camera.
-        Quaternion initialRotation = Quaternion.Euler(GameConstants.CameraAngleOffset);
+        Quaternion initialRotation = Quaternion.Euler(CameraConstants.CameraAngleOffset);
 
         Vector3 eu = mCameraTransform.rotation.eulerAngles;
 
-        angleX -= my * GameConstants.RotationSpeed;
+        angleX -= my * CameraConstants.RotationSpeed;
 
         // We clamp the angle along the Xaxis to be between the min and max pitch.
-        angleX = Mathf.Clamp(angleX, GameConstants.MinPitch, GameConstants.MaxPitch);
+        angleX = Mathf.Clamp(angleX, CameraConstants.MinPitch, CameraConstants.MaxPitch);
 
-        eu.y += mx * GameConstants.RotationSpeed;
+        eu.y += mx * CameraConstants.RotationSpeed;
         Quaternion newRot = Quaternion.Euler(angleX, eu.y, 0.0f) * initialRotation;
 
         mCameraTransform.rotation = newRot;
@@ -54,13 +55,13 @@ public class TPCFollowIndependentRotation : TPCBase
 
         Vector3 targetPos = mPlayerTransform.position;
         Vector3 desiredPosition = targetPos
-            + forward * GameConstants.CameraPositionOffset.z
-            + right * GameConstants.CameraPositionOffset.x
-            + up * GameConstants.CameraPositionOffset.y;
+            + forward * CameraConstants.CameraPositionOffset.z
+            + right * CameraConstants.CameraPositionOffset.x
+            + up * CameraConstants.CameraPositionOffset.y;
 
         Vector3 position = Vector3.Lerp(mCameraTransform.position,
             desiredPosition,
-            Time.deltaTime * GameConstants.Damping);
+            Time.deltaTime * CameraConstants.Damping);
 
         mCameraTransform.position = position;
     }

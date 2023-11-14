@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PGGE;
 
 public abstract class TPCFollow : TPCBase
 {
@@ -27,14 +28,14 @@ public abstract class TPCFollow : TPCBase
         // Note that we cannot just add the offset.
         // You will need to take care of the direction as well.
         Vector3 desiredPosition = targetPos
-            + forward * GameConstants.CameraPositionOffset.z
-            + right * GameConstants.CameraPositionOffset.x
-            + up * GameConstants.CameraPositionOffset.y;
+            + forward * CameraConstants.CameraPositionOffset.z
+            + right * CameraConstants.CameraPositionOffset.x
+            + up * CameraConstants.CameraPositionOffset.y;
 
         // Finally, we change the position of the camera, 
         // not directly, but by applying Lerp.
         Vector3 position = Vector3.Lerp(mCameraTransform.position,
-            desiredPosition, Time.deltaTime * GameConstants.Damping);
+            desiredPosition, Time.deltaTime * CameraConstants.Damping);
         mCameraTransform.position = position;
     }
 }

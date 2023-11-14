@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PGGE;
 
 public class TPCFollowTrackPosition : TPCFollow
 {
@@ -14,7 +15,7 @@ public class TPCFollowTrackPosition : TPCFollow
         // Create the initial rotation quaternion based on the 
         // camera angle offset.
         Quaternion initialRotation =
-           Quaternion.Euler(GameConstants.CameraAngleOffset);
+           Quaternion.Euler(CameraConstants.CameraAngleOffset);
 
         // Now rotate the camera to the above initial rotation offset.
         // We do it using damping/Lerp
@@ -22,7 +23,7 @@ public class TPCFollowTrackPosition : TPCFollow
         mCameraTransform.rotation =
             Quaternion.RotateTowards(mCameraTransform.rotation,
                 initialRotation,
-                Time.deltaTime * GameConstants.Damping);
+                Time.deltaTime * CameraConstants.Damping);
 
         // We now call the base class Update method to take care of the
         // position tracking.
