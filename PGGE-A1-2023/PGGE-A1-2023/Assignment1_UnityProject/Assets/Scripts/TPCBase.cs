@@ -43,6 +43,8 @@ namespace PGGE
             // find the nearest collision point to the player
             // shift the camera position to the nearest intersected point
             //-------------------------------------------------------------------
+
+            
         }
 
         public abstract void Update();
