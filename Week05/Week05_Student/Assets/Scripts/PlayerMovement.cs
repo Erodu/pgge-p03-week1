@@ -12,6 +12,9 @@ public class PlayerMovement : MonoBehaviour
     public float mRotationSpeed = 50.0f;
     public bool mFollowCameraForward = false;
     public float mTurnRate = 10.0f;
+    private float hInput;
+    private float vInput;
+    private float speed;
 
 #if UNITY_ANDROID
     public FixedJoystick mJoystick;
@@ -25,23 +28,32 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        HandleInputs();
+        Move();
+    }
+
+    private void HandleInputs()
+    {
 #if UNITY_STANDALONE
-        float hInput = Input.GetAxis("Horizontal");
-        float vInput = Input.GetAxis("Vertical");
+        hInput = Input.GetAxis("Horizontal");
+        vInput = Input.GetAxis("Vertical");
 #endif
 
 #if UNITY_ANDROID
-        float hInput = 2.0f * mJoystick.Horizontal;
-        float vInput = 2.0f * mJoystick.Vertical;
+        hInput = 2.0f * mJoystick.Horizontal;
+        vInput = 2.0f * mJoystick.Vertical;
 #endif
 
 
-        float speed = mWalkSpeed;
+        speed = mWalkSpeed;
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = mWalkSpeed * 2.0f;
         }
+    }
 
+    private void Move()
+    {
         if (mAnimator == null) return;
         if (mFollowCameraForward)
         {
