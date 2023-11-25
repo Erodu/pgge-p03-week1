@@ -48,17 +48,29 @@ namespace PGGE
             layerMask = ~layerMask;
 
             RaycastHit hit;
-            
-            //Vector3 playerDistance = mPlayerTransform.position - mCameraTransform.position;
-            //float distanceToObstacle = 0;
+
+            Vector3 newCameraTransform = mCameraTransform.position;
+
+            //Ray cameraRay = new Ray(mCameraTransform.position, mPlayerTransform.position - mCameraTransform.position);
+
+            float playerDistance = Vector3.Distance(mCameraTransform.position * 0.4f, mPlayerTransform.position * 0.1f);
 
             if (Physics.Raycast(mCameraTransform.position, mCameraTransform.TransformDirection(Vector3.forward), 
-                out hit, Mathf.Infinity, layerMask))
+                out hit, playerDistance, layerMask))
             {
+                Debug.DrawRay(mCameraTransform.position, mCameraTransform.TransformDirection(Vector3.forward) * hit.distance, 
+                    Color.yellow);
+
+                newCameraTransform = hit.point;
+                mCameraTransform.position = newCameraTransform;
                 Debug.Log("Hit");
             }
             else
             {
+                Debug.DrawRay(mCameraTransform.position, mCameraTransform.TransformDirection(Vector3.forward) * 100, 
+                    Color.red);
+
+                mCameraTransform.position = newCameraTransform;
                 Debug.Log("No Hit");
             }
         }
