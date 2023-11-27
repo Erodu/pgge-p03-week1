@@ -209,7 +209,7 @@ public class PlayerState_RELOAD : PlayerState
 
     public override void Enter()
     {
-        mPlayer.mAnimator.SetTrigger("Reload");
+        mPlayer.mAnimator.SetTrigger("Recharge");
         mPlayer.Reload();
         dt = 0.0f;
     }

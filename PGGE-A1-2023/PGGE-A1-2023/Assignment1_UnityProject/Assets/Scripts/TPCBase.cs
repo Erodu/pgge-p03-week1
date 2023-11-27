@@ -63,7 +63,7 @@ namespace PGGE
 
                 newCameraTransform = hit.point;
                 mCameraTransform.position = newCameraTransform;
-                Debug.Log("Hit");
+                //Debug.Log("Hit");
             }
             else
             {
@@ -71,7 +71,7 @@ namespace PGGE
                     Color.red);
 
                 mCameraTransform.position = newCameraTransform;
-                Debug.Log("No Hit");
+                //Debug.Log("No Hit");
             }
         }
 
