@@ -1108,13 +1108,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mAnimator: {fileID: 1107439913}
   mPlayerMovement: {fileID: 1017902220}
-  mMaxAmunitionBeforeReload: 40
-  mAmunitionCount: 100
-  mBulletsInMagazine: 40
+  mMaxAttacksBeforeRecharge: 10
+  mAttacksCount: 100
+  mAttacksLeft: 10
   mAttackButtons: 0000
-  mBulletPrefab: {fileID: 0}
-  mBulletSpeed: 10
-  RoundsPerSecond: 00000000
+  AttacksPerSecond: 0000000000000000
 --- !u!1 &1107439911 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a76647c49e5ba1c46b648d6d8893a22b, type: 3}
@@ -1736,13 +1734,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mAnimator: {fileID: 230244813}
   mPlayerMovement: {fileID: 2145642070}
-  mMaxAmunitionBeforeReload: 40
-  mAmunitionCount: 100
-  mBulletsInMagazine: 40
+  mMaxAttacksBeforeRecharge: 10
+  mAttacksCount: 100
+  mAttacksLeft: 10
   mAttackButtons: 000000
-  mBulletPrefab: {fileID: 1794198430189847228, guid: d8d3ec337bac0704cbfca3cb3fdcb904, type: 3}
-  mBulletSpeed: 10
-  RoundsPerSecond: 0a0000000800000002000000
+  AttacksPerSecond: 0000000000000000
 --- !u!82 &2145642072
 AudioSource:
   m_ObjectHideFlags: 0
