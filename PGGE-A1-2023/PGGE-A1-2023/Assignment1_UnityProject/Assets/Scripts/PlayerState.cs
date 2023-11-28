@@ -186,15 +186,7 @@ public class PlayerState_ATTACK : PlayerState
             mPlayer.mCurrentAttackID = mAttackID;
             AnimatorStateInfo stateInfo = mPlayer.mAnimator.GetCurrentAnimatorStateInfo(0);
             float animLength = stateInfo.length;
-            Debug.Log(mPlayer.attack1Clip.length);
-            //AnimatorClipInfo[] clipInfo = mPlayer.mAnimator.GetCurrentAnimatorClipInfo(mAttackID);
-            //AnimationClip mClip = clipInfo[mAttackID].clip;
-            //Debug.Log(mClip.name);
-            //float frameNum = (mClip.frameRate * mClip.length) * Time.deltaTime;
-            Debug.Log(stateInfo.IsName(mAttackName));
             mPlayer.StartCoroutine(mPlayer.Coroutine_Attacking(mAttackID, animLength));
-
-            Debug.Log("Fuck it we ball");
         }
         //else
         //{
@@ -204,48 +196,43 @@ public class PlayerState_ATTACK : PlayerState
         //    // For tutor - end   ---------------------------------------------//
         //}
     }
+}
 
-    public class PlayerState_RECHARGE : PlayerState
+public class PlayerState_RECHARGE : PlayerState
+{
+    public float RechargeTime = 3.0f;
+    float dt = 0.0f;
+    public int previousState;
+    public PlayerState_RECHARGE(Player player) : base(player)
     {
-        public float ReloadTime = 3.0f;
-        float dt = 0.0f;
-        public int previousState;
-        public PlayerState_RECHARGE(Player player) : base(player)
-        {
-            mId = (int)(PlayerStateType.RECHARGE);
-        }
+        mId = (int)(PlayerStateType.RECHARGE);
+    }
 
-        public override void Enter()
-        {
-            mPlayer.mAnimator.SetTrigger("Recharge");
-            mPlayer.Recharge();
-            dt = 0.0f;
-        }
-        public override void Exit()
-        {
-            //if (mPlayer.mAttacksCount > mPlayer.mMaxAttacksBeforeRecharge)
-            //{
-            //    mPlayer.mAttacksLeft += mPlayer.mMaxAttacksBeforeRecharge;
-            //    mPlayer.mAttacksCount -= mPlayer.mAttacksLeft;
-            //}
-            //else if (mPlayer.mAttacksCount > 0 && mPlayer.mAttacksCount < mPlayer.mMaxAttacksBeforeRecharge)
-            //{
-            //    mPlayer.mAttacksLeft += mPlayer.mAttacksCount;
-            //    mPlayer.mAttacksCount = 0;
-            //}
-        }
+    public override void Enter()
+    {
+        mPlayer.mAnimator.SetTrigger("Recharge");
+        mPlayer.Recharge();
+        dt = 0.0f;
+    }
+    public override void Exit()
+    {
+        //if (mFsm.GetCurrentState() != mPlayer.mFsm.GetState((int)PlayerStateType.MOVEMENT))
+        //{
+        //    mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+        //}
+        //mPlayer.isRecharging = false;
+    }
 
-        public override void Update()
+    public override void Update()
+    {
+        dt += Time.deltaTime;
+        if (dt >= RechargeTime)
         {
-            dt += Time.deltaTime;
-            if (dt >= ReloadTime)
-            {
-                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
-            }
+            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
         }
+    }
 
-        public override void FixedUpdate()
-        {
-        }
+    public override void FixedUpdate()
+    {
     }
 }

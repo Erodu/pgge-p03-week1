@@ -53,13 +53,15 @@ public class Player : MonoBehaviour
     //bool[] mFiring = new bool[3];
     bool[] mAttacking = new bool[2];
 
+    [HideInInspector] public bool isRecharging = false;
+
 
     // Start is called before the first frame update
     void Start()
     {
         mFsm.Add(new PlayerState_MOVEMENT(this));
         mFsm.Add(new PlayerState_ATTACK(this));
-        //mFsm.Add(new PlayerState_RELOAD(this));
+        mFsm.Add(new PlayerState_RECHARGE(this));
         mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
 
         //mPlayerClipInfo = mAnimator.GetCurrentAnimatorClipInfo(0);
@@ -100,6 +102,12 @@ public class Player : MonoBehaviour
         else
         {
             mAttackButtons[1] = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.R) && isRecharging == false)
+        {
+            isRecharging = true;
+            mFsm.SetCurrentState((int)PlayerStateType.RECHARGE);
         }
 
         //if (Input.GetButton("Fire3"))
@@ -271,12 +279,6 @@ public class Player : MonoBehaviour
     {
         mAttacking[id] = true;
         yield return new WaitForSeconds(frameLength);
-        //Debug.Log(frameLength);
-        //mAnimator.SetBool("Attack" + id, false);
-        //mAttacking[id] = false;
-        //mAttacksLeft -= 1;
-        //mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
-        //Debug.Log("WE BALLIN");
     }
 
     public void SetToMovement()
