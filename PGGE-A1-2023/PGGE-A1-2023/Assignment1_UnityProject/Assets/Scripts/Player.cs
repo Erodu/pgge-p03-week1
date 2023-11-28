@@ -10,23 +10,28 @@ public class Player : MonoBehaviour
     public FSM mFsm = new FSM();
     public Animator mAnimator;
     public PlayerMovement mPlayerMovement;
+    public AnimationClip attack1Clip;
+    public int mCurrentAttackID;
+
+    //AnimatorClipInfo[] mPlayerClipInfo;
+    //float mCurrentClipLength;
 
     //// This is the maximum number of bullets that the player 
     //// needs to fire before reloading.
     //public int mMaxAmunitionBeforeReload = 40;
-    public int mMaxAttacksBeforeRecharge = 10;
+    //public int mMaxAttacksBeforeRecharge = 10;
 
 
     //// This is the total number of bullets that the 
     //// player has.
     //[HideInInspector]
     //public int mAmunitionCount = 100;
-    public int mAttacksCount = 100;
+    //public int mAttacksCount = 100;
 
     //// This is the count of bullets in the magazine.
     //[HideInInspector]
     //public int mBulletsInMagazine = 40;
-    public int mAttacksLeft = 10;
+    //public int mAttacksLeft = 10;
 
     [HideInInspector]
     public bool[] mAttackButtons = new bool[2];
@@ -54,8 +59,14 @@ public class Player : MonoBehaviour
     {
         mFsm.Add(new PlayerState_MOVEMENT(this));
         mFsm.Add(new PlayerState_ATTACK(this));
-        mFsm.Add(new PlayerState_RELOAD(this));
+        //mFsm.Add(new PlayerState_RELOAD(this));
         mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+
+        //mPlayerClipInfo = mAnimator.GetCurrentAnimatorClipInfo(0);
+
+        //mCurrentClipLength = mPlayerClipInfo[0].clip.length;
+
+
 
         //PlayerConstants.PlayerMask = mPlayerMask;
     }
@@ -69,7 +80,7 @@ public class Player : MonoBehaviour
         // Implement the logic of button clicks for shooting. 
         //-----------------------------------------------------------------//
 
-        if (Input.GetButton("Fire1"))
+        if (Input.GetButtonDown("Fire1"))
         {
             mAttackButtons[0] = true;
             mAttackButtons[1] = false;
@@ -80,7 +91,7 @@ public class Player : MonoBehaviour
             mAttackButtons[0] = false;
         }
 
-        if (Input.GetButton("Fire2"))
+        if (Input.GetButtonDown("Fire2"))
         {
             mAttackButtons[0] = false;
             mAttackButtons[1] = true;
@@ -221,10 +232,16 @@ public class Player : MonoBehaviour
 
     public void Attack(int id)
     {
-        if (mAttacking[id] == false)
-        {
-            StartCoroutine(Coroutine_Attacking(id));
-        }
+        //if (mAttacking[id] == false)
+        //{
+        //    AnimatorStateInfo stateInfo = mAnimator.GetCurrentAnimatorStateInfo(0);
+        //    if (stateInfo.IsName("Attack" + id))
+        //    {
+        //        float animLength = stateInfo.length;
+
+        //        StartCoroutine(Coroutine_Attacking(id, animLength));
+        //    }
+        //}
     }
 
     //public void FireBullet()
@@ -250,11 +267,21 @@ public class Player : MonoBehaviour
     //    mBulletsInMagazine -= 1;
     //  }
     //}
-    IEnumerator Coroutine_Attacking(int id)
+    public IEnumerator Coroutine_Attacking(int id, float frameLength)
     {
         mAttacking[id] = true;
-        yield return new WaitForSeconds(1.0f / AttacksPerSecond[id]);
-        mAttacking[id] = false;
-        mAttacksLeft -= 1;
+        yield return new WaitForSeconds(frameLength);
+        //Debug.Log(frameLength);
+        //mAnimator.SetBool("Attack" + id, false);
+        //mAttacking[id] = false;
+        //mAttacksLeft -= 1;
+        //mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+        //Debug.Log("WE BALLIN");
+    }
+
+    public void SetToMovement()
+    {
+        mAnimator.SetBool("Attack" + mCurrentAttackID, false);
+        mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
     }
 }

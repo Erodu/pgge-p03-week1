@@ -77,6 +77,8 @@ public class MutantState : FSMState
             {
                 if (mMutant.mAttackButtons[i])
                 {
+                    mMutant.mAnimator.SetBool("Attack" + i.ToString(), true);
+
                     
                 }
             }
@@ -119,18 +121,18 @@ public class MutantState_ATTACK : MutantState
 
     public override void Update()
     {
-        base.Update();
+        //base.Update();
 
-        if (mMutant.mAttacksLeft == 0)
-        {
-            mMutant.mFsm.SetCurrentState((int)MutantStateType.RECHARGE);
-            return;
-        }
+        //if (mMutant.mAttacksLeft == 0)
+        //{
+        //    mMutant.mFsm.SetCurrentState((int)MutantStateType.RECHARGE);
+        //    return;
+        //}
 
-        if (mMutant.mAttackButtons[mAttackID])
-        {
-            mMutant.mAnimator.SetBool(mAttackName, true);
-            //mMutant
-        }
+        //if (mMutant.mAttackButtons[mAttackID])
+        //{
+        //    mMutant.mAnimator.SetBool(mAttackName, true);
+        //    //mMutant
+        //}
     }
 }

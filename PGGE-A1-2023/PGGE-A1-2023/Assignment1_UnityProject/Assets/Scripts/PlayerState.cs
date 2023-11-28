@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using PGGE.Patterns;
+using UnityEngine.Assertions.Must;
 
 public enum PlayerStateType
 {
     MOVEMENT = 0,
     ATTACK,
-    RELOAD,
+    RECHARGE,
 }
 
 public class PlayerState : FSMState
@@ -77,23 +78,17 @@ public class PlayerState_MOVEMENT : PlayerState
         {
             if (mPlayer.mAttackButtons[i])
             {
-                if (mPlayer.mAttacksLeft > 0)
-                {
-                    PlayerState_ATTACK attack =
-                  (PlayerState_ATTACK)mFsm.GetState(
-                            (int)PlayerStateType.ATTACK);
+                PlayerState_ATTACK attack = (PlayerState_ATTACK)mFsm.GetState((int)PlayerStateType.ATTACK);
 
-                    attack.AttackID = i;
-                    mPlayer.mFsm.SetCurrentState(
-                        (int)PlayerStateType.ATTACK);
-                }
-                else
-                {
-                    Debug.Log("No more ammo left");
-                }
+                attack.AttackID = i;
+                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.ATTACK);
+
+                //mPlayer.
             }
         }
     }
+
+    //IEnumerator Coroutine_AttackLength()
 
     public override void FixedUpdate()
     {
@@ -105,6 +100,7 @@ public class PlayerState_ATTACK : PlayerState
 {
     private int mAttackID = 0;
     private string mAttackName;
+    private float mAttackAnimDuration;
 
     public int AttackID
     {
@@ -126,6 +122,7 @@ public class PlayerState_ATTACK : PlayerState
 
     public override void Enter()
     {
+        //mAttackAnimDuration = mPlayer
         mPlayer.mAnimator.SetBool(mAttackName, true);
     }
     public override void Exit()
@@ -167,76 +164,88 @@ public class PlayerState_ATTACK : PlayerState
         // Fire buttons.
         // Discuss with your tutor if you find any difficulties
         // in implementing this section.        
-        
-        // For tutor - start ---------------------------------------------//
-        Debug.Log("Ammo count: " + mPlayer.mAttacksCount + ", In Magazine: " + mPlayer.mAttacksLeft);
-        if (mPlayer.mAttacksLeft == 0 && mPlayer.mAttacksCount > 0)
-        {
-            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.RELOAD);
-            return;
-        }
 
-        if (mPlayer.mAttacksCount <= 0 && mPlayer.mAttacksLeft <= 0)
-        {
-            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
-            mPlayer.NoAttacks();
-            return;
-        }
+        // For tutor - start ---------------------------------------------//
+        //    Debug.Log("Ammo count: " + mPlayer.mAttacksCount + ", In Magazine: " + mPlayer.mAttacksLeft);
+        //    if (mPlayer.mAttacksLeft == 0 && mPlayer.mAttacksCount > 0)
+        //    {
+        //        mPlayer.mFsm.SetCurrentState((int)PlayerStateType.RELOAD);
+        //        return;
+        //    }
+
+        //    if (mPlayer.mAttacksCount <= 0 && mPlayer.mAttacksLeft <= 0)
+        //    {
+        //        mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+        //        mPlayer.NoAttacks();
+        //        return;
+        //    }
 
         if (mPlayer.mAttackButtons[mAttackID])
         {
             mPlayer.mAnimator.SetBool(mAttackName, true);
-            mPlayer.Attack(AttackID);
-        }
-        else
-        {
-            mPlayer.mAnimator.SetBool(mAttackName, false);
-            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
-        }
-        // For tutor - end   ---------------------------------------------//
-    }
-}
+            mPlayer.mCurrentAttackID = mAttackID;
+            AnimatorStateInfo stateInfo = mPlayer.mAnimator.GetCurrentAnimatorStateInfo(0);
+            float animLength = stateInfo.length;
+            Debug.Log(mPlayer.attack1Clip.length);
+            //AnimatorClipInfo[] clipInfo = mPlayer.mAnimator.GetCurrentAnimatorClipInfo(mAttackID);
+            //AnimationClip mClip = clipInfo[mAttackID].clip;
+            //Debug.Log(mClip.name);
+            //float frameNum = (mClip.frameRate * mClip.length) * Time.deltaTime;
+            Debug.Log(stateInfo.IsName(mAttackName));
+            mPlayer.StartCoroutine(mPlayer.Coroutine_Attacking(mAttackID, animLength));
 
-public class PlayerState_RELOAD : PlayerState
-{
-    public float ReloadTime = 3.0f;
-    float dt = 0.0f;
-    public int previousState;
-    public PlayerState_RELOAD(Player player) : base(player)
-    {
-        mId = (int)(PlayerStateType.RELOAD);
-    }
-
-    public override void Enter()
-    {
-        mPlayer.mAnimator.SetTrigger("Recharge");
-        mPlayer.Recharge();
-        dt = 0.0f;
-    }
-    public override void Exit()
-    {
-        if (mPlayer.mAttacksCount > mPlayer.mMaxAttacksBeforeRecharge)
-        {
-            mPlayer.mAttacksLeft += mPlayer.mMaxAttacksBeforeRecharge;
-            mPlayer.mAttacksCount -= mPlayer.mAttacksLeft;
+            Debug.Log("Fuck it we ball");
         }
-        else if (mPlayer.mAttacksCount > 0 && mPlayer.mAttacksCount < mPlayer.mMaxAttacksBeforeRecharge)
-        {
-            mPlayer.mAttacksLeft += mPlayer.mAttacksCount;
-            mPlayer.mAttacksCount = 0;
-        }
+        //else
+        //{
+        //    mPlayer.mAnimator.SetBool(mAttackName, false);
+        //    mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+        //}
+        //    // For tutor - end   ---------------------------------------------//
+        //}
     }
 
-    public override void Update()
+    public class PlayerState_RECHARGE : PlayerState
     {
-        dt += Time.deltaTime;
-        if (dt >= ReloadTime)
+        public float ReloadTime = 3.0f;
+        float dt = 0.0f;
+        public int previousState;
+        public PlayerState_RECHARGE(Player player) : base(player)
         {
-            mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+            mId = (int)(PlayerStateType.RECHARGE);
         }
-    }
 
-    public override void FixedUpdate()
-    {
+        public override void Enter()
+        {
+            mPlayer.mAnimator.SetTrigger("Recharge");
+            mPlayer.Recharge();
+            dt = 0.0f;
+        }
+        public override void Exit()
+        {
+            //if (mPlayer.mAttacksCount > mPlayer.mMaxAttacksBeforeRecharge)
+            //{
+            //    mPlayer.mAttacksLeft += mPlayer.mMaxAttacksBeforeRecharge;
+            //    mPlayer.mAttacksCount -= mPlayer.mAttacksLeft;
+            //}
+            //else if (mPlayer.mAttacksCount > 0 && mPlayer.mAttacksCount < mPlayer.mMaxAttacksBeforeRecharge)
+            //{
+            //    mPlayer.mAttacksLeft += mPlayer.mAttacksCount;
+            //    mPlayer.mAttacksCount = 0;
+            //}
+        }
+
+        public override void Update()
+        {
+            dt += Time.deltaTime;
+            if (dt >= ReloadTime)
+            {
+                mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+            }
+        }
+
+        public override void FixedUpdate()
+        {
+        }
     }
 }

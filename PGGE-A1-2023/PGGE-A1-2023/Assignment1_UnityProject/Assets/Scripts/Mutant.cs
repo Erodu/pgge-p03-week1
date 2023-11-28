@@ -10,9 +10,9 @@ public class Mutant : MonoBehaviour
     public Animator mAnimator;
     public PlayerMovement mPlayerMovement;
 
-    public int mMaxAttacksBeforeRecharge = 10;
+    //public int mMaxAttacksBeforeRecharge = 10;
 
-    public int mAttacksLeft = 10;
+    //public int mAttacksLeft = 10;
 
     public bool[] mAttackButtons = new bool[1];
 

@@ -28,6 +28,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 mVelocity = new Vector3(0.0f, 0.0f, 0.0f);
 
+    private float lerpedValue = 0f;
+
     void Start()
     {
         mCharacterController = GetComponent<CharacterController>();
@@ -35,8 +37,8 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        HandleInputs();
-        Move();
+        //HandleInputs();
+        //Move();
     }
 
     private void FixedUpdate()
@@ -61,6 +63,11 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = mWalkSpeed * 2.0f;
+            lerpedValue = Mathf.Lerp(lerpedValue, 0.9f, 0.05f);
+        }
+        else
+        {
+            lerpedValue = Mathf.Lerp(lerpedValue, vInput * 0.5f, 0.05f);
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -105,7 +112,7 @@ public class PlayerMovement : MonoBehaviour
 
         mCharacterController.Move(forward * vInput * speed * Time.deltaTime);
         mAnimator.SetFloat("PosX", 0);
-        mAnimator.SetFloat("PosZ", vInput * speed / (2.0f * mWalkSpeed));
+        mAnimator.SetFloat("PosZ", lerpedValue);
 
         if(jump)
         {
