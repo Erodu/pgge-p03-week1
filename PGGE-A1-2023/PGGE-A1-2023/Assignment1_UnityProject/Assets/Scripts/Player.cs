@@ -106,6 +106,7 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.R) && isRecharging == false)
         {
+            //Debug.Log("Recharge Start");
             isRecharging = true;
             mFsm.SetCurrentState((int)PlayerStateType.RECHARGE);
         }
@@ -283,7 +284,7 @@ public class Player : MonoBehaviour
 
     public void SetToMovement()
     {
-        mAnimator.SetBool("Attack" + mCurrentAttackID, false);
+        mAnimator.SetBool("Attack" + (mCurrentAttackID+1), false);
         mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
     }
 }

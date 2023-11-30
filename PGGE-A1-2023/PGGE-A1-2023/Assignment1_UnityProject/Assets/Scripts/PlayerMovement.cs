@@ -14,6 +14,13 @@ public class PlayerMovement : MonoBehaviour
     public bool mFollowCameraForward = false;
     public float mTurnRate = 10.0f;
 
+    public AudioSource mAudioSource;
+    public AudioClip[] defaultFootsteps;
+    public AudioClip[] grassFootsteps;
+    public AudioClip[] woodFootsteps;
+
+    public LayerMask groundLayer;
+
 #if UNITY_ANDROID
     public FixedJoystick mJoystick;
 #endif
@@ -39,6 +46,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //HandleInputs();
         //Move();
+        //Debug.Log(mCharacterController.isGrounded);
     }
 
     private void FixedUpdate()
@@ -64,15 +72,26 @@ public class PlayerMovement : MonoBehaviour
         {
             speed = mWalkSpeed * 2.0f;
             lerpedValue = Mathf.Lerp(lerpedValue, 0.9f, 0.05f);
+
+            //if (vInput != 0f)
+            //{
+            //    StartCoroutine(PlayFootsteps(0.4f));
+            //}
         }
         else
         {
             lerpedValue = Mathf.Lerp(lerpedValue, vInput * 0.5f, 0.05f);
+
+            //if (vInput != 0f)
+            //{
+            //    StartCoroutine(PlayFootsteps(0.8f));
+            //}
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jump = true;
+            //Debug.Log(mCharacterController.isGrounded);
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
@@ -119,12 +138,16 @@ public class PlayerMovement : MonoBehaviour
             Jump();
             jump = false;
         }
+
+        mCharacterController.Move(mVelocity* Time.deltaTime);
+
     }
 
     void Jump()
     {
         mAnimator.SetTrigger("Jump");
         mVelocity.y += Mathf.Sqrt(mJumpHeight * -2f * mGravity);
+        //Debug.Log(jump);
     }
 
     private Vector3 HalfHeight;
@@ -149,7 +172,35 @@ public class PlayerMovement : MonoBehaviour
     {
         // apply gravity.
         mVelocity.y += mGravity * Time.deltaTime;
-        if (mCharacterController.isGrounded && mVelocity.y < 0)
-            mVelocity.y = 0f;
+        if (mCharacterController.isGrounded && mVelocity.y < 0) mVelocity.y = -0.01f;
+
     }
+
+    void Footsteps()
+    {
+        AudioClip[] footsteps = defaultFootsteps;
+
+        RaycastHit hit;
+
+        //Debug.DrawRay(transform.position, Vector3.down * 2, Color.red);
+
+        if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out hit, 5f, groundLayer))
+        {
+            //Debug.Log(hit.collider.tag);
+            if (hit.collider.CompareTag("Grass"))
+            {
+                //Debug.Log("Detected Grass");
+                footsteps = grassFootsteps;
+            }
+            else if (hit.collider.CompareTag("Wood"))
+            {
+                //Debug.Log("Detected Wood");
+                footsteps = woodFootsteps;
+            }
+        }
+        AudioClip playedSound = footsteps[Random.Range(0, footsteps.Length)];
+        mAudioSource.clip = playedSound;
+        mAudioSource.PlayOneShot(playedSound);
+    }
+
 }

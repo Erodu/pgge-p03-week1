@@ -74,6 +74,7 @@ public class PlayerState_MOVEMENT : PlayerState
 
         mPlayer.Move();
 
+        //swtich to attack state
         for (int i = 0; i < mPlayer.mAttackButtons.Length; ++i)
         {
             if (mPlayer.mAttackButtons[i])
@@ -200,7 +201,7 @@ public class PlayerState_ATTACK : PlayerState
 
 public class PlayerState_RECHARGE : PlayerState
 {
-    public float RechargeTime = 3.0f;
+    public float RechargeTime = 5.0f;
     float dt = 0.0f;
     public int previousState;
     public PlayerState_RECHARGE(Player player) : base(player)
@@ -228,7 +229,9 @@ public class PlayerState_RECHARGE : PlayerState
         dt += Time.deltaTime;
         if (dt >= RechargeTime)
         {
+            //Debug.Log("Recharge End");
             mPlayer.mFsm.SetCurrentState((int)PlayerStateType.MOVEMENT);
+            mPlayer.isRecharging = false;
         }
     }
 

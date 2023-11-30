@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace PGGE
 {
@@ -141,6 +142,7 @@ namespace PGGE
                 if (m_currentState != null)
                 {
                     m_currentState.Update();
+                    //Debug.WriteLine(m_currentState.ToString());
                 }
             }
 
