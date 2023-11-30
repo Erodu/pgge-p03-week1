@@ -44,9 +44,6 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        //HandleInputs();
-        //Move();
-        //Debug.Log(mCharacterController.isGrounded);
     }
 
     private void FixedUpdate()
@@ -71,21 +68,12 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey(KeyCode.LeftShift))
         {
             speed = mWalkSpeed * 2.0f;
+            // Doing this lerp allows for the walking and running animations to transition between each other more smoothly.
             lerpedValue = Mathf.Lerp(lerpedValue, 0.9f, 0.05f);
-
-            //if (vInput != 0f)
-            //{
-            //    StartCoroutine(PlayFootsteps(0.4f));
-            //}
         }
         else
         {
             lerpedValue = Mathf.Lerp(lerpedValue, vInput * 0.5f, 0.05f);
-
-            //if (vInput != 0f)
-            //{
-            //    StartCoroutine(PlayFootsteps(0.8f));
-            //}
         }
 
         if (Input.GetKeyDown(KeyCode.Space))
@@ -139,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
             jump = false;
         }
 
-        mCharacterController.Move(mVelocity* Time.deltaTime);
+        mCharacterController.Move(mVelocity * Time.deltaTime);
 
     }
 
@@ -172,12 +160,14 @@ public class PlayerMovement : MonoBehaviour
     {
         // apply gravity.
         mVelocity.y += mGravity * Time.deltaTime;
+        // Apply a small downward force to the Y vector to make sure that mCharacterController.IsGrounded() returns true while grounded.
         if (mCharacterController.isGrounded && mVelocity.y < 0) mVelocity.y = -0.01f;
 
     }
 
     void Footsteps()
     {
+        // Assign concrete footstep sounds by default.
         AudioClip[] footsteps = defaultFootsteps;
 
         RaycastHit hit;
@@ -186,6 +176,8 @@ public class PlayerMovement : MonoBehaviour
 
         if (Physics.Raycast(transform.position + Vector3.up, Vector3.down, out hit, 5f, groundLayer))
         {
+
+            // Depending on what the surface is tagged with, assign a different array of audio clips.
             //Debug.Log(hit.collider.tag);
             if (hit.collider.CompareTag("Grass"))
             {
@@ -198,6 +190,7 @@ public class PlayerMovement : MonoBehaviour
                 footsteps = woodFootsteps;
             }
         }
+        // Randomly select an audio clip from the assigned array.
         AudioClip playedSound = footsteps[Random.Range(0, footsteps.Length)];
         mAudioSource.clip = playedSound;
         mAudioSource.PlayOneShot(playedSound);

@@ -56,6 +56,7 @@ namespace PGGE
             if (Physics.Raycast(mCameraTransform.position, mCameraTransform.TransformDirection(Vector3.forward), 
                 out hit, playerDistance, layerMask))
             {
+                // New camera position will be at the collision point.
                 newCameraTransform = hit.point;
                 mCameraTransform.position = newCameraTransform;
             }
